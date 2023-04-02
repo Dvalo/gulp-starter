@@ -8,6 +8,7 @@ const uglify = require('gulp-uglify');
 const cleanCSS = require('gulp-clean-css');
 const autoprefixer = require('gulp-autoprefixer');
 const dependents = require('gulp-dependents');
+const imagemin = require('gulp-imagemin');
 const browserSync = require('browser-sync').create();
 
 const paths = {
@@ -22,6 +23,10 @@ const paths = {
   html: {
     src: 'src/*.html',
     dest: 'dist',
+  },
+  image: {
+    src: 'src/assets/images/**/*',
+    dest: 'dist/assets',
   },
 };
 
@@ -68,6 +73,13 @@ const html = () => {
     .pipe(browserSync.stream());
 };
 
+const images = () => {
+  return gulp
+    .src(paths.image.src)
+    .pipe(imagemin())
+    .pipe(gulp.dest(paths.image.dest));
+};
+
 const watch = () => {
   browserSync.init({
     server: {
@@ -75,16 +87,18 @@ const watch = () => {
     },
     port: 3000,
   });
-  gulp.watch('src/scss/**/*.scss', css);
-  gulp.watch('src/js/**/*.js', js);
-  gulp.watch('src/*.html', html);
+  gulp.watch(paths.styles.src, css);
+  gulp.watch(paths.scripts.src, js);
+  gulp.watch(paths.html.src, html);
+  gulp.watch(paths.image.src, images);
 };
 
-const build = gulp.series(gulp.parallel(css, js, html));
+const build = gulp.series(gulp.parallel(css, js, html, images));
 
 gulp.task('css', css);
 gulp.task('js', js);
 gulp.task('html', html);
+gulp.task('images', images);
 gulp.task('watch', watch);
 gulp.task('build', build);
 
