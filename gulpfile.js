@@ -3,12 +3,15 @@ const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
 const babel = require('gulp-babel');
+const webpack = require('webpack-stream');
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const cleanCSS = require('gulp-clean-css');
 const autoprefixer = require('gulp-autoprefixer');
 const dependents = require('gulp-dependents');
 const imagemin = require('gulp-imagemin');
+const imageminWebp = require('imagemin-webp');
+const del = require('del');
 const browserSync = require('browser-sync').create();
 
 const paths = {
@@ -30,11 +33,19 @@ const paths = {
   },
 };
 
+const clean = () => {
+  return del(['dist']);
+};
+
 const css = () => {
   return gulp
     .src(paths.styles.src)
     .pipe(plumber())
-    .pipe(dependents())
+    .pipe(
+      webpack({
+        mode: 'production',
+      })
+    )
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS())
@@ -76,7 +87,7 @@ const html = () => {
 const images = () => {
   return gulp
     .src(paths.image.src)
-    .pipe(imagemin())
+    .pipe(imagemin([imageminWebp({ quality: 70 })]))
     .pipe(gulp.dest(paths.image.dest));
 };
 
@@ -86,6 +97,7 @@ const watch = () => {
       baseDir: 'dist',
     },
     port: 3000,
+    ghostMode: false,
   });
   gulp.watch(paths.styles.src, css);
   gulp.watch(paths.scripts.src, js);
@@ -93,7 +105,7 @@ const watch = () => {
   gulp.watch(paths.image.src, images);
 };
 
-const build = gulp.series(gulp.parallel(css, js, html, images));
+const build = gulp.series(clean, gulp.parallel(css, js, html, images));
 
 gulp.task('css', css);
 gulp.task('js', js);
@@ -102,4 +114,4 @@ gulp.task('images', images);
 gulp.task('watch', watch);
 gulp.task('build', build);
 
-gulp.task('default', gulp.series(build, watch));
+gulp.task('default', gulp.series(gulp.parallel(css, js, html, images), watch));

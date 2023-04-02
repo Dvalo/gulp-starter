@@ -13,6 +13,7 @@
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
     "browser-sync": "^2.29.1",
+    "del": "^6.0.0",
     "gh-pages": "^5.0.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
@@ -25,12 +26,14 @@
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-uglify": "^3.0.2",
+    "imagemin-webp": "^6.0.0",
     "prettier": "^2.8.7",
     "sass": "^1.60.0",
     "stylelint": "^14.16.1",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^26.0.0",
-    "stylelint-order": "^6.0.3"
+    "stylelint-order": "^6.0.3",
+    "webpack-stream": "^7.0.0"
   }
 }
