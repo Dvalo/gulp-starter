@@ -41,11 +41,7 @@ const css = () => {
   return gulp
     .src(paths.styles.src)
     .pipe(plumber())
-    .pipe(
-      webpack({
-        mode: 'production',
-      })
-    )
+    .pipe(dependents())
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS())
@@ -63,7 +59,11 @@ const js = () => {
   return gulp
     .src(paths.scripts.src)
     .pipe(plumber())
-    .pipe(dependents())
+    .pipe(
+      webpack({
+        mode: 'production',
+      })
+    )
     .pipe(sourcemaps.init())
     .pipe(
       babel({
